@@ -1,2 +1,2 @@
-# senti-device-simulator
+# Senti Device Simulator
 Senti Device Simulator
