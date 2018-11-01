@@ -7,13 +7,13 @@ const helmet = require('helmet')
 const mqtt = require('mqtt')
 const getAvailablePort = require('./getavailableport')
 
-// read the id of the Senti organisation out of a local .env file
+// read the id of the Senti.Cloud organisation out of a local .env file
 // format of .env file:
-// SENTI_ORG=<id of Senti organization>
+// SENTI_ORG=<id of Senti.Cloud organization>
 
 // Note that the following configuration must match with the parameters that
 // the device-simulator was registered with. This device registration can
-// either be done in the Senti Device Registry dashboard or via SentiAPI
+// either be done in the Senti.Cloud Device Registry dashboard or via SentiAPI
 
 let senti = {
 	"org": process.env.SENTI_ORG_ID,
@@ -23,9 +23,8 @@ let senti = {
 	"auth-method": "token"
 }
 
-const numSimulations = 10
-let topicBase = 'senti/sensor/simulator/'
-let pingTime = 3
+let topic = 'senti/sensor/simulator/' + senti.id
+let varIntervalBetweenData = 2
 let QosLevel = 0
 
 const app = express()
@@ -51,7 +50,7 @@ const startExpressServer = async () => {
 
 startExpressServer()
 
-//---Connect to the Senti Device Registry service (SDR) --------------------------------------
+//---Connect to the Senti.Cloud Device Registry service--------------------------------------
 
 // Create a client (used to send data)
 // var client = new Iotf.IotfDevice(senti)
@@ -62,13 +61,13 @@ const clientId = senti.id
 // client.connect()
 let client = mqtt.connect('mqtt://hive.senti.cloud', { clientId: clientId })
 
-// Handle errors coming from Senti Device Registry service
+// Handle errors coming from Senti.Cloud Device Registry service
 client.on("error", (err) => {
 	console.log(err.message)
-	// console.log("Error received while connecting to Senti Device Registry service: " + err.message)
+	// console.log("Error received while connecting to Senti.Cloud Device Registry service: " + err.message)
 	if (err.message.indexOf('authorized') > -1) {
 		console.log('')
-		console.log("Make sure the device-simulator is registered in the Senti org with the following configuration:")
+		console.log("Make sure the device-simulator is registered in the Senti.Cloud org with the following configuration:")
 		console.log(senti)
 		console.log('')
 	}
@@ -82,33 +81,25 @@ client.on("connect", () => {
 	// inital data packet to be emitted as a JSON object
 	let dataPacket = {
 		"d": {
-			"temperature": 20,
+			"temperature": 17,
 			"pressure": 50
 		}
 	}
 
-	//--loop forever on numSimulations------------------------------------------------------------
+	//--loop forever------------------------------------------------------------
 
 	setInterval(() => {
 
-		for (let i = 0; i < numSimulations;) {
-			i++
-			let date = new Date()
-			dataPacket.ts = date.toISOString()
-			dataPacket.id = 'sim' + i
-	
-			client.publish(topicBase + 'sim' + i, JSON.stringify(dataPacket))
-			// mqtt sub -h hive.senti -t senti/sensor/simulator/sim1
-			// mqtt sub -h hive.senti -t senti/sensor/simulator/# for all simulations
-	
-			console.log(JSON.stringify(dataPacket))
-	
-			dataPacket.d.temperature = Math.floor(Math.random() * (37 - 5 + 1)) + 5
-			dataPacket.d.pressure = Math.floor(Math.random() * (100 - 40 + 1)) + 40
-		}
+		let date = new Date()
+		dataPacket.ts = date.toISOString()
 
+		client.publish(topic, JSON.stringify(dataPacket))
+		// mqtt sub -h hive.senti.cloud -t senti/sensor/simulator/sim1
 
-	}, pingTime * 1000)
+		console.log(JSON.stringify(dataPacket))
+
+		dataPacket.d.temperature = Math.floor(Math.random() * (37 - 5 + 1)) + 5
+		dataPacket.d.pressure = Math.floor(Math.random() * (100 - 40 + 1)) + 40
+
+	}, varIntervalBetweenData * 1000)
 })
-
-
