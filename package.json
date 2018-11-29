@@ -1,6 +1,6 @@
 {
   "name": "senti-device-simulator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Senti Device Simulator",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,11 @@
     "simulator",
     "senti.cloud"
   ],
-  "author": "Christian Broberg",
+  "author": {
+	"name": "Christian Broberg",
+	"email": "apisupport@senti.cloud",
+	"url": "https://senti.cloud/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/senti-platform/senti-device-simulator/issues"
