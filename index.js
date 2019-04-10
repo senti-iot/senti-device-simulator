@@ -23,10 +23,10 @@ let senti = {
 	"auth-method": "token"
 }
 
-const numSimulations = 10
+const numSimulations = 100
 let topicBase = 'senti/sensor/simulator/'
-let pingTime = 3
-let QosLevel = 0
+let pingTime = 100
+let QosLevel = 1
 
 const app = express()
 app.use(helmet())
@@ -108,7 +108,7 @@ client.on("connect", () => {
 		}
 
 
-	}, pingTime * 1000)
+	}, pingTime)
 })
 
 
