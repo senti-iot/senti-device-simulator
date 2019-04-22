@@ -25,7 +25,7 @@ let senti = {
 
 const numSimulations = 5
 let topicBase = 'v1/webhouse/location/europe/registries/webhouse-demo-registry/devices/sim1/publish'
-let pingTime = 5000
+let pingTime = 5000 // milliseconds
 let QosLevel = 1
 
 const app = express()
