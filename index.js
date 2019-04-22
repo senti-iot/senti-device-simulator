@@ -23,9 +23,9 @@ let senti = {
 	"auth-method": "token"
 }
 
-const numSimulations = 100
-let topicBase = 'senti/sensor/simulator/'
-let pingTime = 100
+const numSimulations = 5
+let topicBase = 'v1/webhouse/location/europe/registries/webhouse-demo-registry/devices/sim1/publish'
+let pingTime = 5000
 let QosLevel = 1
 
 const app = express()
